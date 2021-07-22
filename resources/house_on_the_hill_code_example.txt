@@ -1,0 +1,85 @@
+abstract Default = {
+    flags
+        startcat = document_plan01 ;
+    cat
+        document_plan01 ;
+        segment02 ;
+        amr03 ;
+        frame04 ;
+        amr05 ;
+        frame06 ;
+        operation07 ;
+        operation08 ;
+        operation09 ;
+        operation11 ;
+        operation12 ;
+        operation13 ;
+        operation15 ;
+        operation16 ;
+        operation17 ;
+        operation18 ;
+    fun
+        Function01 : segment02 -> document_plan01 ;
+        Function02 : amr03 -> segment02 ;
+        Function03 : frame04 -> amr03 ;
+        Function04 : amr05 -> frame04 ;
+        Function05 : frame06 -> amr05 ;
+        Function06 : operation07 -> frame06 ;
+        Function07 : operation08 -> operation07 ;
+        Function08 : operation09 -> operation11 -> operation08 ;
+        Function09 : operation09 ;
+        Function10 : operation18 -> operation12 -> operation11 ;
+        Function11 : operation15 -> operation13 -> operation12 ;
+        Function12 : operation13 ;
+        Function13 : operation16 -> operation17 -> operation15 ;
+        Function14 : operation16 ;
+        Function15 : operation17 ;
+        Function16 : operation18 ;
+}
+
+incomplete concrete DefaultBody of Default = open Syntax, Grammar, DefaultLex, MorphoEng, ResEng, ParadigmsEng in {
+    lincat
+        document_plan01, segment02 = Str ;
+        operation07, amr05, amr03, frame06, frame04 = Utt ;
+        operation12 = NP ;
+        operation18 = Prep ;
+        operation16 = Quant ;
+        operation08, operation09, operation13 = CN ;
+        operation11 = Adv ;
+        operation17 = Num ;
+        operation15 = Det ;
+    lin
+        Function01 segment02 = segment02 ;
+        Function02 amr03 = amr03.s ;
+        Function03 frame04 = frame04 ;
+        Function04 amr05 = amr05 ;
+        Function05 frame06 = frame06 ;
+        Function06 operation07 = operation07 ;
+        Function07 operation08 = Syntax.mkUtt operation08 ;
+        Function08 operation09 operation11 = Syntax.mkCN operation09 operation11 ;
+        Function09 = Syntax.mkCN house_N ;
+        Function10 operation18 operation12 = Syntax.mkAdv operation18 operation12 ;
+        Function11 operation15 operation13 = Syntax.mkNP operation15 operation13 ;
+        Function12 = Syntax.mkCN hill_N ;
+        Function13 operation16 operation17 = Syntax.mkDet operation16 operation17 ;
+        Function14 = Syntax.the_Quant ;
+        Function15 = Syntax.singularNum ;
+        Function16 = Syntax.on_Prep ;
+}
+
+concrete DefaultInstance of Default = DefaultBody with
+  (Syntax=SyntaxEng),
+  (Grammar=GrammarEng),
+  (DefaultLex=DefaultLexEng);
+
+interface DefaultLex = {
+    oper
+        house_N : N ;
+        hill_N : N ;
+}
+
+resource DefaultLexEng = open SyntaxEng, GrammarEng, ParadigmsEng, ResEng, MorphoEng in {
+    oper
+        house_N : N = (ParadigmsEng.mkN (ParadigmsEng.nonhuman) (ParadigmsEng.mkN "house")) ;
+        hill_N : N = (ParadigmsEng.mkN (ParadigmsEng.nonhuman) (ParadigmsEng.mkN "hill")) ;
+}
